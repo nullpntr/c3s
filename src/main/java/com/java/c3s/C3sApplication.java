@@ -1,4 +1,4 @@
-package com.rakuten.c3s;
+package com.java.c3s;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

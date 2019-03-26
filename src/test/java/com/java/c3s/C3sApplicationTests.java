@@ -1,4 +1,4 @@
-package com.rakuten.c3s;
+package com.java.c3s;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
