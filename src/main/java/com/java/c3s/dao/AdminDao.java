@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.java.c3s.entity.Admin;
 
 @Repository
-public interface AdminDao extends JpaRepository<Admin,String>{
+public interface AdminDao extends JpaRepository<Admin, Long> {
 
 }

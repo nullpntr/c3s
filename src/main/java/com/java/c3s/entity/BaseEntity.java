@@ -9,26 +9,33 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 
 @MappedSuperclass
 @EntityListeners(EntityListener.class)
 public class BaseEntity {
 
-  @Column(name = "sysdeleteflag")
-  int sysDeleteFlag = 0;
+  @Column(name = "sysdeleteflag", nullable = false, columnDefinition = "Integer default 0")
+  // @ColumnDefault("0")
+  Integer sysDeleteFlag;
 
   @Version
   @Column(name = "sysupdatedcount")
-  int sysUpdatedCount;
+  Integer sysUpdatedCount;
 
   @Column(name = "lastupdatedby")
   String lastUpdatedBy;
 
+  @CreationTimestamp
   @Column(name = "syscreatedatetime")
   LocalDateTime sysCreateDateTime;
 
+  @UpdateTimestamp
   @Column(name = "sysupdatedatetime")
   LocalDateTime sysUpdateDateTime;
+
 
   public int getSysDeleteFlag() {
     return sysDeleteFlag;
@@ -38,13 +45,13 @@ public class BaseEntity {
     this.sysDeleteFlag = sysDeleteFlag;
   }
 
-  public int getSysUpdatedCount() {
-    return sysUpdatedCount;
-  }
-
-  public void setSysUpdatedCount(int sysUpdatedCount) {
-    this.sysUpdatedCount = sysUpdatedCount;
-  }
+  // public int getSysUpdatedCount() {
+  // return sysUpdatedCount;
+  // }
+  //
+  // public void setSysUpdatedCount(int sysUpdatedCount) {
+  // this.sysUpdatedCount = sysUpdatedCount;
+  // }
 
   public String getLastUpdatedBy() {
     return lastUpdatedBy;

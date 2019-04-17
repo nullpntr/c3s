@@ -1,12 +1,13 @@
 package com.java.c3s.entity;
 
-import javax.persistence.PrePersist;
-
 public class EntityListener {
-  @PrePersist
-  void setSystemCreateDateTime() {
+  // @PrePersist
+  // void setDefaultDeleteValue(Integer sysDeleteFlag) {
+  // if (sysDeleteFlag == null) {
+  // sysDeleteFlag = 0;
+  // }
+  // }
 
-  }
 
   public EntityListener() {
 

@@ -1,10 +1,6 @@
 package com.java.c3s.entity;
 
-import java.util.Date;
-
-import javax.persistence.CascadeType;
-
-//import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,83 +10,99 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Where;
+
+@Entity(name = "booking")
+@Where(clause = "sysDeleteFlag=0")
+public class Booking extends BaseEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id")
+  private Long id;
+
+  @Column(name = "bookingdatetime")
+  private LocalDateTime bookingDateTime;
 
 
-@Entity(name="booking")
-public class Booking {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id")
-	
-	private Long id;
-	
-	@Column(name="date")
-	private Date date;
-	
-	@Column(name="deliverydate")
-	private Date deliveryDate;
-	
-	@Column(name="plateno")
-	private String plateNo;
-	
-//	@OneToOne(cascade=CascadeType.PERSIST)
-//    @JoinColumn(name="serviceCenterId")
-//	private ServiceCenter serviceCenter;
-	
-	@OneToOne(cascade=CascadeType.PERSIST)
-	 @JoinColumn(name="id")
-	private User userId;
-	
-	
-	public Booking(){
-		
-	}
-	
-	public Booking(Long id,String plateNo){
-		this.id = id;
-		this.plateNo = plateNo;
-	}
+  @Column(name = "deliverydatetime")
+  private LocalDateTime deliveryDateTime;
 
-	public Date getDate() {
-		return date;
-	}
+  @Column(name = "plateno")
+  private String plateNo;
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
 
-	public Date getDeliveryDate() {
-		return deliveryDate;
-	}
+  @OneToOne
+  @JoinColumn(name = "servicecenterid")
+  private ServiceCenter serviceCenter;
 
-	public void setDeliveryDate(Date deliveryDate) {
-		this.deliveryDate = deliveryDate;
-	}
 
-	public Long getId() {
-		return id;
-	}
+  @OneToOne
+  @JoinColumn(name = "customerid")
+  private Customer customer;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public Booking() {
 
-	public String getPlateNo() {
-		return plateNo;
-	}
+  }
 
-	public void setPlateNo(String plateNo) {
-		this.plateNo = plateNo;
-	}
+  public Booking(Long id, String plateNo) {
+    this.id = id;
+    this.plateNo = plateNo;
+  }
 
-	public User getUser() {
-		return userId;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public void setUser(User userId) {
-		this.userId = userId;
-	}
-   
-   
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getPlateNo() {
+    return plateNo;
+  }
+
+  public void setPlateNo(String plateNo) {
+    this.plateNo = plateNo;
+  }
+  public LocalDateTime getRegistrationDateTime() {
+    return bookingDateTime;
+  }
+
+  public void setRegistrationDateTime(LocalDateTime bookingDateTime) {
+    this.bookingDateTime = bookingDateTime;
+  }
+
+  public LocalDateTime getDeliveryDateTime() {
+    return deliveryDateTime;
+  }
+
+  public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
+    this.deliveryDateTime = deliveryDateTime;
+  }
+
+  public LocalDateTime getBookingDateTime() {
+    return bookingDateTime;
+  }
+
+  public void setBookingDateTime(LocalDateTime bookingDateTime) {
+    this.bookingDateTime = bookingDateTime;
+  }
+
+  public ServiceCenter getServiceCenter() {
+    return serviceCenter;
+  }
+
+  public void setServiceCenter(ServiceCenter serviceCenter) {
+    this.serviceCenter = serviceCenter;
+  }
+
+  public Customer getCustomerId() {
+    return customer;
+  }
+
+  public void setCustomerId(Customer customer) {
+    this.customer = customer;
+  }
 
 }
