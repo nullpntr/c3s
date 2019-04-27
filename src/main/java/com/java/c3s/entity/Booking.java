@@ -1,6 +1,7 @@
 package com.java.c3s.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,11 +23,19 @@ public class Booking extends BaseEntity {
   private Long id;
 
   @Column(name = "bookingdatetime")
-  private LocalDateTime bookingDateTime;
+  private String bookingDateTime;
 
 
+  // private LocalDateTime deliveryDateTime;
+  //
+  // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH");
+  //
+  // String formatDateTime = deliveryDateTime.format(formatter);
+  // LocalDateTime formatedDateTime = LocalDateTime.parse(formatDateTime);
+  // public LocalDateTime formatedDateTime;
   @Column(name = "deliverydatetime")
   private LocalDateTime deliveryDateTime;
+
 
   @Column(name = "plateno")
   private String plateNo;
@@ -65,12 +74,17 @@ public class Booking extends BaseEntity {
   public void setPlateNo(String plateNo) {
     this.plateNo = plateNo;
   }
-  public LocalDateTime getRegistrationDateTime() {
+  public String getRegistrationDateTime() {
     return bookingDateTime;
   }
 
   public void setRegistrationDateTime(LocalDateTime bookingDateTime) {
-    this.bookingDateTime = bookingDateTime;
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    String formatDateTime = now.format(formatter);
+    this.bookingDateTime = formatDateTime;
   }
 
   public LocalDateTime getDeliveryDateTime() {
@@ -81,12 +95,18 @@ public class Booking extends BaseEntity {
     this.deliveryDateTime = deliveryDateTime;
   }
 
-  public LocalDateTime getBookingDateTime() {
+  public String getBookingDateTime() {
     return bookingDateTime;
   }
 
-  public void setBookingDateTime(LocalDateTime bookingDateTime) {
-    this.bookingDateTime = bookingDateTime;
+  public void setBookingDateTime() {
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter
+        .ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    String formatDateTime = now.format(formatter);
+    this.bookingDateTime = formatDateTime;
+
   }
 
   public ServiceCenter getServiceCenter() {
@@ -97,11 +117,11 @@ public class Booking extends BaseEntity {
     this.serviceCenter = serviceCenter;
   }
 
-  public Customer getCustomerId() {
+  public Customer getCustomer() {
     return customer;
   }
 
-  public void setCustomerId(Customer customer) {
+  public void setCustomer(Customer customer) {
     this.customer = customer;
   }
 

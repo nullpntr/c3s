@@ -3,11 +3,11 @@ package com.java.c3s.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.java.c3s.entity.Admin;
+import com.java.c3s.entity.User;
 
 @Repository
-public interface AdminDao extends JpaRepository<Admin, Long> {
+public interface UserDao extends JpaRepository<User, Long> {
 
-  Admin findByuserName(String username);
+  User findByuserName(String username);
 
 }

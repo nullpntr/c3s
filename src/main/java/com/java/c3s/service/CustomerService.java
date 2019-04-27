@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.java.c3s.dao.CustomerDao;
@@ -19,13 +20,21 @@ public class CustomerService {
   @Autowired
   RoleDao rDao;
 
-  public Customer addCustomer(Customer customer) {
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
+
+
+  public Customer addCustomer(Customer customer, String name) {
     customer.setSysDeleteFlag(0);
-    // Set<Roles> role = customer.getRoles();
-    // Optional<Roles> rData = rDao.findById(role.getRoleId());
-    // Set<Roles>Roles rDatum = rData.get();
-    // customer.setRoles(rDatum);
-    return cDao.save(customer);
+    customer.setLastUpdatedBy(name);
+
+    if (cDao.findByuserName(customer.getUserName()) == null) {
+
+      return cDao.save(customer);
+    } else {
+      return null;
+    }
+
   }
 
   public List<Customer> viewCustomer() {
@@ -37,17 +46,27 @@ public class CustomerService {
   }
 
   public Customer editCustomer(Optional<Customer> customerDetails,
-      Customer customer) {
+      Customer customer, String name) {
+
     Customer customerDetail = customerDetails.get();
-    if (customer.getUserName() != null) {
+
+    if (customer.getUserName() != null
+        && cDao.findByuserName(customer.getUserName()) == null) {
+
       customerDetail.setUserName(customer.getUserName());
     }
     if (customer.getPassword() != null) {
-      customerDetail.setPassword(customer.getPassword());
+      String pwd = customer.getPassword();
+      String encryptPwd = passwordEncoder.encode(pwd);
+      customerDetail.setPassword(encryptPwd);
     }
     if (customer.getEmailId() != null) {
       customerDetail.setEmailId(customer.getEmailId());
     }
+    if (customer.getRoles() != null) {
+      customerDetail.setRoles(customer.getRoles());
+    }
+    customerDetail.setLastUpdatedBy(name);
     return cDao.save(customerDetail);
   }
 

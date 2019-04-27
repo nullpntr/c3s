@@ -1,9 +1,13 @@
 package com.java.c3s.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.java.c3s.entity.Booking;
 import com.java.c3s.entity.Customer;
 import com.java.c3s.entity.ServiceCenter;
+import com.java.c3s.entity.User;
 import com.java.c3s.service.BookingService;
 import com.java.c3s.service.CustomerService;
 import com.java.c3s.service.ServiceCenterService;
+import com.java.c3s.service.UserService;
 
 @Controller
 public class HomeController {
@@ -33,72 +39,54 @@ public class HomeController {
   @Autowired
   private CustomerService customerService;
 
-  // Service Centers
-  @PostMapping(value = "/servicecenter/add")
+  @Autowired
+  private UserService userService;
+
+  @PostMapping(value = "user/add")
   @ResponseBody
-  public String addServiceCenter(@RequestBody ServiceCenter serviceCenter) {
-    if (scService.addServiceCenter(serviceCenter) == null) {
-      return "Something is wrong!!";
+  public String addUser(@RequestBody User user) {
+    String pwd = user.getPassword();
+    String encryptPwd = passwordEncoder.encode(pwd);
+    user.setPassword(encryptPwd);
+
+    Authentication authentication = SecurityContextHolder.getContext()
+        .getAuthentication();
+    String name = authentication.getName();
+
+    if (name == "anonymousUser") {
+      name = user.getUserName();
+    }
+    if (userService.addUser(user, name) == null) {
+      return "Something is wrong";
     } else {
 
-      return "ServiceCenter is added successfully";
+      return "User Added Successfully";
     }
   }
-
+  // To view all available service centers
   @GetMapping(value = "/servicecenter/view")
   @ResponseBody
   public List<ServiceCenter> getServiceCenters() {
     return scService.findAll();
   }
 
-  @PutMapping("/servicecenter/edit/{id}")
+
+
+  // To make the booking for the car wash
+
+  @PostMapping(value = "/customer/booking/add")
   @ResponseBody
-  public String updateServiceCenter(@RequestBody ServiceCenter serviceCenter,
-      @PathVariable Long id) {
-    Optional<ServiceCenter> serviceCenterDetail = scService.findById(id);
-
-    if (!serviceCenterDetail.isPresent())
-      return "No such id is found";
-    else {
-      serviceCenter.setId(id);
-      Optional<ServiceCenter> sc = scService.findById(id);
-
-      scService.editServiceCenter(serviceCenter, sc);
-      return "Successfully updated";
-    }
-  }
-
-  @DeleteMapping(value = "/servicecenter/delete/{id}")
-  @ResponseBody
-  public String deleteServiceCenter(@PathVariable Long id) {
-    Optional<ServiceCenter> serviceCenterDetail = scService.findById(id);
-    if (!serviceCenterDetail.isPresent())
-      return "Wrong data,give the correct id to delete";
-    else {
-      scService.deleteServiceCenter(id);
-      return "Successfully deleted";
-    }
-  }
-
-  // booking
-
-  @PostMapping(value = "/booking/add")
-  @ResponseBody
-  public String addBooking(@RequestBody Booking booking) {
-    if (bookingService.addBooking(booking) == null) {
-      return "Something is wrong";
+  public List<String> addBooking(@RequestBody Booking booking) {
+    List<String> errors = new ArrayList<>();
+    if (bookingService.addBooking(booking, errors) == null) {
+      return errors;
     } else {
 
-      return "Bookings Added Successfully";
+      return Arrays.asList("Bookings Added Successfully");
     }
   }
 
-  @GetMapping(value = "/booking/view")
-  @ResponseBody
-  public List<Booking> getbookings() {
-    return bookingService.showAll();
-  }
-
+  // To edit the booking
   @PutMapping(value = "/booking/edit/{id}")
   @ResponseBody
   public String editBooking(@RequestBody Booking booking,
@@ -113,6 +101,7 @@ public class HomeController {
     }
     }
 
+  // To cancel the booking
   @DeleteMapping(value = "booking/delete/{id}")
   @ResponseBody
   public String deleteBooking(@PathVariable Long id) {
@@ -121,10 +110,11 @@ public class HomeController {
       bookingService.deleteBookingDetail(bookingDetail, id);
       return "Successfully Deleted";
     } else {
-      return "Enter the right booking id to delete";
+      return "Invalid Booking Id";
     }
   }
 
+  // To change the service center
   @PutMapping(value = "booking/changeservicecenter/{id}")
   @ResponseBody
   public String changeServiceCenter(@RequestBody Booking booking,
@@ -139,16 +129,26 @@ public class HomeController {
     }
   }
 
+
+  // To resgister the customer
   @Autowired
   private BCryptPasswordEncoder passwordEncoder;
-  // Customer
+
   @PostMapping(value = "/customer/add")
   @ResponseBody
   public String addCustomer(@RequestBody Customer customer) {
     String pwd = customer.getPassword();
     String encryptPwd = passwordEncoder.encode(pwd);
     customer.setPassword(encryptPwd);
-    if (customerService.addCustomer(customer) == null) {
+
+    Authentication authentication = SecurityContextHolder.getContext()
+        .getAuthentication();
+    String name = authentication.getName();
+
+    if (name == "anonymousUser") {
+      name = customer.getUserName();
+    }
+    if (customerService.addCustomer(customer, name) == null) {
       return "Something is wrong";
     } else {
 
@@ -156,44 +156,37 @@ public class HomeController {
     }
   }
 
-  @GetMapping(value = "/customer/view")
-  @ResponseBody
-  public List<Customer> viewCustomer() {
-    return customerService.viewCustomer();
-  }
 
+  // To edit the customer Details
   @PutMapping(value = "/customer/edit/{id}")
   @ResponseBody
   public String editCustomer(@RequestBody Customer customer,
       @PathVariable Long id) {
     Optional<Customer> customerDetails = customerService.findById(id);
+    Authentication authentication = SecurityContextHolder.getContext()
+        .getAuthentication();
+    String name = authentication.getName();
     if (customerDetails.isPresent()) {
       customerService.editCustomer(customerDetails,
-          customer);
+          customer, name);
       return "Customer Details successfully modified";
     } else {
       return "There is no such Customer Id";
     }
   }
 
-  @DeleteMapping(value = "/customer/delete/{id}")
+  @PutMapping(value = "/user/edit/{id}")
   @ResponseBody
-  public String deleteCustomer(@PathVariable Long id) {
-    Optional<Customer> customerDetails = customerService.findById(id);
-    if (customerDetails.isPresent()) {
-      customerService.deleteCustomer(id);
-      return "Successfully Deleted the details ";
+  public String editUser(@RequestBody User user, @PathVariable Long id) {
+    Optional<User> userDetails = userService.findById(id);
+    Authentication authentication = SecurityContextHolder.getContext()
+        .getAuthentication();
+    String name = authentication.getName();
+    if (userDetails.isPresent()) {
+      userService.editUser(userDetails, user, name);
+      return "User Details successfully modified";
     } else {
-      return "There is no such Customer id";
+      return "There is no such User Id";
     }
   }
-
-
-
-  /**
-   * 1. add a request mapping with POST type and add a service center to your
-   * existing list 2. update an existing service center 3. delete an existing
-   * service center
-   */
-
 }

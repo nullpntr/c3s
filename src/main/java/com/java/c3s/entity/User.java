@@ -15,10 +15,10 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Where;
 
-@Entity(name = "admin")
+@Entity(name = "user")
 @Where(clause = "sysDeleteFlag=0")
 
-public class Admin extends BaseEntity {
+public class User extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -69,7 +69,7 @@ public class Admin extends BaseEntity {
   public void setEmailId(String emailId) {
     this.emailId = emailId;
   }
-	
+
   public Set<Roles> getRoles() {
     return roles;
   }
@@ -78,22 +78,23 @@ public class Admin extends BaseEntity {
     this.roles = roles;
   }
 
-  public Admin(Admin admin) {
-    this.userName = admin.getUserName();
-    this.password = admin.getPassword();
-    this.emailId = admin.getEmailId();
-    this.id = admin.getId();
-    this.roles = admin.getRoles();
+  public User(User user) {
+    this.userName = user.getUserName();
+    this.password = user.getPassword();
+    this.emailId = user.getEmailId();
+    this.id = user.getId();
+    this.roles = user.getRoles();
   }
-  public void setAdmin(Admin admin) {
-    this.userName = admin.getUserName();
-    this.password = admin.getPassword();
-    this.emailId = admin.getEmailId();
-    this.id = admin.getId();
-    this.roles = admin.getRoles();
+  public void setUser(User user) {
+    this.userName = user.getUserName();
+    this.password = user.getPassword();
+    this.emailId = user.getEmailId();
+    this.id = user.getId();
+    this.roles = user.getRoles();
   }
 
-  public Admin() {
+  public User() {
 
   }
 }
+

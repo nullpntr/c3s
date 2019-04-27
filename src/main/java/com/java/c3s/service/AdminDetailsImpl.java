@@ -7,30 +7,30 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.java.c3s.entity.Customer;
+import com.java.c3s.entity.Admin;
 
-
-public class CustomerDetailsImpl extends Customer implements UserDetails {
+public class AdminDetailsImpl extends Admin implements UserDetails {
 
   /**
    * 
    */
-  private static final long serialVersionUID = -4320033453519484949L;
+  private static final long serialVersionUID = -6908584148549286539L;
+  /**
+   * 
+   */
+  
 
   // public CustomerDetailsImpl(final Customer customer) {
   // super(customer);
   // }
-  private Customer customer;
-//  public CustomerDetailsImpl(final Customer customer) {
-//    this.customer = customer;
-//
-//  }
-//  public CustomerDetailsImpl() {
-//
-//  }
-
-
-
+  private Admin admin;
+  // public CustomerDetailsImpl(final Customer customer) {
+  // this.customer = customer;
+  //
+  // }
+  // public CustomerDetailsImpl() {
+  //
+  // }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -74,6 +74,7 @@ public class CustomerDetailsImpl extends Customer implements UserDetails {
   public boolean isEnabled() {
     // TODO Auto-generated method stub
     return true;
-  } 
+  }
 
 }
+

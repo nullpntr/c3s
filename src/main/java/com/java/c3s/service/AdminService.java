@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.java.c3s.dao.AdminDao;
@@ -20,9 +21,17 @@ public class AdminService {
 	@Autowired
   private BookingDao bDao;
 	
-	public Admin addAdmin(Admin admin) {
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
+
+  public Admin addAdmin(Admin admin, String user) {
     admin.setSysDeleteFlag(0);
+    admin.setLastUpdatedBy(user);
+    if (aDao.findByuserName(admin.getUserName()) == null) {
     return aDao.save(admin);
+    } else {
+      return null;
+    }
 	}
 	
 	public List<Booking> viewBookings() {
@@ -33,25 +42,36 @@ public class AdminService {
     return aDao.findAll();
   }
 
-  public Admin editAdmin(Optional<Admin> adminDetails, Admin admin) {
+  public Admin editAdmin(Optional<Admin> adminDetails, Admin admin,
+      String name) {
     Admin adminDetail = adminDetails.get();
     // adminDetail.setId(admin.getId());
-    if (admin.getUserName() != null) {
+
+    if (admin.getUserName() != null
+        && aDao.findByuserName(admin.getUserName()) == null) {
       adminDetail.setUserName(admin.getUserName());
     }
     if (admin.getPassword() != null) {
-      adminDetail.setPassword(admin.getPassword());
+      String pwd = admin.getPassword();
+      String encryptPwd = passwordEncoder.encode(pwd);
+      adminDetail.setPassword(encryptPwd);
+
     }
     if (admin.getEmailId() != null) {
       adminDetail.setEmailId(admin.getEmailId());
     }
+    adminDetail.setLastUpdatedBy(name);
     return aDao.save(adminDetail);
   }
   public Admin deleteAdmin(Long id) {
     Optional<Admin> adminDetails = findById(id);
+    if (adminDetails.isPresent()) {
     Admin adminDetail = adminDetails.get();
     adminDetail.setSysDeleteFlag(1);
     return aDao.save(adminDetail);
+    } else {
+      return null;
+    }
 
   }
 

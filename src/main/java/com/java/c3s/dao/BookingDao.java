@@ -1,5 +1,6 @@
 package com.java.c3s.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,7 @@ public interface BookingDao extends JpaRepository<Booking,Long>{
 
   List<Booking> findByServiceCenter(ServiceCenter sc);
   List<Booking> findByCustomer(Customer c);
+  List<Booking> findByBookingDateTime(LocalDateTime bdt);
+  List<Booking> findByDeliveryDateTime(LocalDateTime deliveryDateTime);
 
 }
